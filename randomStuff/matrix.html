@@ -1,0 +1,132 @@
+<html>
+<head>
+    <title>Matrix</title>
+    <style type="text/css">
+    .noBorder {
+        border-width: 0px;
+        scroll-behavior: initial
+    }
+    .itemDivs
+    {
+        height:1050px;
+        width:12px;
+        background-image: url("http://thematrixsubwayscene.weebly.com/uploads/4/7/2/0/47203933/976058_orig.gif?333");
+        background-image: url("file:///C:/Source2/plant42/randomStuff/matrix.jpg");
+       /* background-repeat:repeat-y; */
+        position:relative;
+        float:left;
+    }
+
+    .counter
+    {
+        font-family:Fixedsys;
+        color:Lime;
+        position:absolute;
+        top:200;
+        width:100%;
+        text-align:center;
+        font-size:200px;
+        filter:alpha(opacity=40);
+        z-index:20;
+    }
+
+    </style>
+    <script type="text/javascript">
+        
+        var countobj;
+        function createDivs() {
+            var owidth = window.screen.width;
+            var oheight = window.screen.height;
+            var dvMain = document.getElementById("dvMain");
+            var i = 0;
+            var newobj;
+
+            for (i = 0; i < owidth - 12; i = i + 12) {
+                newobj = document.createElement("div");
+                newobj.setAttribute("class", "itemDivs");
+                newobj.setAttribute("id", Math.floor(Math.random() * 15).toString());
+                dvMain.appendChild(newobj)
+            }
+        }
+
+        function startIt() {
+            var dvMain = document.getElementById("dvMain");
+            dvMain.style.width = window.screen.availWidth - 10;
+            dvMain.style.height = window.screen.availHeight - 10;
+            createDivs();
+            window.setInterval('scrollIt()', 30);
+            //window.setTimeout('startCounter()', 5000);
+        }
+
+        function scrollIt() {
+
+            var i = 0;
+            var els = document.getElementById("dvMain").getElementsByTagName("div");
+            var curobj, currx, curry;
+            
+            for (i = 0; i < els.length; i++) {
+                curobj = els[i];
+                currx = curobj.style.backgroundPositionX;
+            
+                if (currx == "0px" || currx == "") currx = "-" + Math.floor(Math.random() * 200).toString() + "px";
+
+                if (curobj.style.backgroundPositionY != "") {
+                    if (curobj.style.backgroundPositionY.indexOf("-") != -1)
+                        curry = parseInt(curobj.style.backgroundPositionY.substring(1, curobj.style.backgroundPositionY.indexOf("p")));
+                    else
+                        curry = parseInt(curobj.style.backgroundPositionY.substring(0, curobj.style.backgroundPositionY.indexOf("p")));
+
+                    if (curry >= 333) curry = 0;
+                        curry = curry + parseInt(curobj.id);
+
+                }
+                else {
+                    curry = parseInt(curobj.id);
+                }            
+                if (curry > -1)
+                    curobj.style.backgroundPosition = currx + " -" + curry + "px";
+                else
+                    curobj.style.backgroundPosition = currx + " " + curry + "px";
+
+                curobj.style.backgroundPosition = currx + " " + curry + "px";
+                
+            }
+
+        }
+
+        function countIt() {
+
+            var obj = document.getElementById("spMain");
+            var txt = obj.innerText;
+            var count = 0;
+
+            if (txt != "") {
+                count = parseInt(txt) - 1;
+                if (count = 0) {
+                    obj.style.display = "none";
+                    window.clearInterval(countobj);
+                }
+
+            } else {
+                count = 10;
+                obj.innerText = count.toString();
+            }
+        }
+
+
+
+        function startCounter() {
+            countobj = window.setInterval('countIt()', 1000);
+        }
+
+       
+    </script>
+
+</head>
+
+<body onload="startIt()">
+    <div id="dvMain" class="noBorder">
+
+    </div>
+</body>
+</html>

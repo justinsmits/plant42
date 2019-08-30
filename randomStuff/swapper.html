@@ -1,0 +1,104 @@
+<html>
+<head>
+    <title>The Reporter</title>
+
+    <style type="text/css">
+
+        .iFrameBase
+        {
+    
+            height:100%;
+            width:100%;
+
+        }
+
+        .iFrameTop
+        {
+    
+            visibility:visible;
+            z-index:  100;
+        }
+
+        .iFrameHidden
+        {
+    
+            visibility:hidden;
+            z-index:  0;
+        }
+        </style>
+    <script type="text/javascript">
+
+        var countobj;
+        var urls = [
+            "https://jira.kcura.com/secure/Dashboard.jspa?selectPageId=16208",
+            "https://jira.kcura.com/secure/Dashboard.jspa?selectPageId=20304"
+        ];
+        var currentIndex = 0;
+
+
+        function createIFrames() {
+
+            var dvMain = document.getElementById("dvMain");
+
+            var i = 0;
+
+            var newobj;
+
+            for (i = 0; i < urls.length; i++) {
+
+                newobj = document.createElement("iframe");
+
+                newobj.setAttribute("src", urls[i]);
+
+                newobj.setAttribute("class", "iFrameBase iFrameHidden");
+                newobj.setAttribute("id", Math.floor(Math.random() * 15).toString());
+
+                dvMain.appendChild(newobj)
+
+            }
+
+        }
+
+        function startIt() {
+
+            createIFrames();
+
+            window.setInterval('scrollIt()', 3000);
+        }
+
+        function scrollIt() {
+
+            var i = 0;
+
+            var els = document.getElementById("dvMain").getElementsByTagName("iframe");
+            var frameIndex = currentIndex;
+            if (frameIndex + 1 > urls.length){
+                frameIndex = 0
+            } else {
+                frameIndex++;
+            }
+            for (i=0;i<els.length; i++){
+                var frameObj = els[i];
+                if (i == frameIndex) {
+                    newobj.setAttribute("class", "iFrameBase iFrameTop");
+                } else {
+                    newobj.setAttribute("class", "iFrameBase iFrameHidden");
+                }
+
+            }
+
+        }
+
+    </script>
+
+</head>
+
+<body onload="startIt()">
+
+    <div id="dvMain" style="width:100%;">
+
+    </div>
+
+</body>
+
+</html>
