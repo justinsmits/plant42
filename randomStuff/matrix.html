@@ -2,6 +2,16 @@
 <head>
     <title>Matrix</title>
     <style type="text/css">
+    .centered {
+        position: absolute;
+        top: 200;
+        width: 100%;
+        font-size: 36px;
+        color: blue;
+        z-index: 100;
+        text-align: center;
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif
+    }
     .noBorder {
         border-width: 0px;
         scroll-behavior: initial
@@ -55,7 +65,6 @@
             dvMain.style.height = window.screen.availHeight - 10;
             createDivs();
             window.setInterval('scrollIt()', 30);
-            //window.setTimeout('startCounter()', 5000);
         }
 
         function scrollIt() {
@@ -113,8 +122,6 @@
             }
         }
 
-
-
         function startCounter() {
             countobj = window.setInterval('countIt()', 1000);
         }
@@ -126,7 +133,7 @@
 
 <body onload="startIt()">
     <div id="dvMain" class="noBorder">
-
+<h1 class="centered">Creator</h1>    
     </div>
 </body>
 </html>
