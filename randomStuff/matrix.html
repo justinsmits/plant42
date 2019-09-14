@@ -54,7 +54,7 @@
             for (i = 0; i < owidth - 12; i = i + 12) {
                 newobj = document.createElement("div");
                 newobj.setAttribute("class", "itemDivs");
-                newobj.setAttribute("id", Math.floor(Math.random() * 15).toString());
+                newobj.setAttribute("id", Math.floor((Math.random() * 15) + 1).toString());
                 dvMain.appendChild(newobj)
             }
         }
