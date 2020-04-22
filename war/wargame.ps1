@@ -12,7 +12,9 @@ class player {
     [System.Collections.ArrayList]$CardsWon
 
     [System.Boolean]HasCards(){
-        return ($this.Cards.Count -gt 0 -or $this.CarsWon.Count -gt 0);
+        $currentCards = $this.CardCount();
+        
+        return ($currentCards -gt 0)
     }
     [System.Int32]CardCount() {
         return ($this.Cards.Count + $this.CardsWon.Count)
@@ -58,24 +60,13 @@ class Deck {
     
 }
 
-function WinWar([PSCustomObject]$winner, [System.Collections.ArrayList]$warMatch){
+function WinWar([PSCustomObject]$winner, [System.Collections.ArrayList]$matchDeck){
     Write-Host -ForegroundColor Green "$($winner.Name) won the war!!"
-    foreach($card in $warMatch) {
-        $winner.CardsWon.add($card)
+    foreach($card in $matchDeck) {
+        [void]$winner.CardsWon.add($card)
     }
 }
 
-function PlayMatch([Card]$aCard,[Card]$bCard) {
-    if ($aCard.number -gt $bCard.number) {
-            return "a"
-
-        } elseif ($bCard.number -gt $aCard.number) {
-            return "b"
-
-        } else {
-            return "w"
-        }
-}
 
 function playgame {
     $a = New-Object player("Bob")
@@ -105,54 +96,59 @@ function playgame {
     }
 
     $i=1
-    while($a.HasCards -and $b.HasCards) {
+    $matchWinner = $null
+    [System.Collections.ArrayList]$matchDeck
+    while(($a.HasCards() -eq $true) -and ($b.HasCards() -eq $true)) {
         Write-Host "Match $i"
-        $aCard = $a.GetCard()
-        $bCard = $b.GetCard()
+        Write-Host "$($a.Name) has $($a.CardCount()) cards left"
+        Write-Host "$($b.Name) has $($b.CardCount()) cards left"
+        $matchDeck = New-Object System.Collections.ArrayList
 
-        Write-Host "$($a.Name) has a $($aCard.number)"
-        Write-Host "$($b.Name) has a $($bCard.number)"
-        #$matchResult = PlayMatch($aCard, $bCard)
-        if ($aCard.number -gt $bCard.number) {
-            Write-Host -ForegroundColor Green "$($a.Name) Wins"
-            [void]$a.CardsWon.Add($aCard)
-            [void]$a.CardsWon.Add($bCard)
+        while(-not $matchWinner) {
+            if (-not ($a.HasCards() -eq $true)){
+                $matchWinner = $b
+                break
+            }
+            if (-not ($b.HasCards() -eq $true)){
+                $matchWinner = $a
+                break
+            }
 
-        } elseif ($bCard.number -gt $aCard.number) {
-            Write-Host -ForegroundColor Green "$($b.Name) Wins"
-            [void]$b.CardsWon.Add($aCard)
-            [void]$b.CardsWon.Add($bCard)
-
-        } else {
-            Write-Host -ForegroundColor Red "WWWWWAAAAAAAAARRRRRRRRR!!!!!!!!!!!!!!!!!!!!!"
-            $warDeck = New-Object System.Collections.ArrayList
-            $warDeck.Add($aCard)
-            $warDeck.Add($bCard)
-            $warDeck.Add($a.GetCard())
-            $warDeck.Add($b.GetCard())
             $aCard = $a.GetCard()
             $bCard = $b.GetCard()
-            $warDeck.Add($aCard)
-            $warDeck.Add($bCard)
+
+            Write-Host "$($a.Name) has a $($aCard.number)"
+            Write-Host "$($b.Name) has a $($bCard.number)"
+            $matchDeck.Add($aCard)
+            $matchDeck.Add($bCard)
+        
             if ($aCard.number -gt $bCard.number) {
-                WinWar($a, $warDeck)
+                $matchWinner = $a
 
             } elseif ($bCard.number -gt $aCard.number) {
-                WinWar($b, $warDeck)
-
+                $matchWinner = $b
             } else {
-                Write-Host -ForegroundColor White "DRAW"
-                $e = 0
-                for ($e=0;$e -lt $warDeck.Count;$e++) {
-                    if ($e % 2 -eq 0) {
-                        $a.CardsWon.Add($warDeck[$e])
-                    } else {
-                        $b.CardsWon.Add($warDeck[$e])
-                    }
+                Write-Host -ForegroundColor Red "WWWWWAAAAAAAAARRRRRRRRR!!!!!!!!!!!!!!!!!!!!!"
+                if (-not ($a.CardCount() -ge 2)) {
+                    $matchWinner = $b
+                    break
                 }
-            }
+                if (-not ($b.CardCount() -ge 2)) {
+                    $matchWinner = $a
+                    break
+                }
+                $aBurn1 = $a.GetCard()
+                $aBurn2 = $a.GetCard()
+                $bBurn1 = $b.GetCard()
+                $bBurn2 = $b.GetCard()
+                $matchDeck.AddRange(($aBurn1, $aBurn2, $bBurn1, $aBurn2))
             
+            }
         }
+
+        WinWar -winner $matchWinner -matchDeck $matchDeck 
+        $matchWinner = $null
+       
         $i++
         if ($i % 5 -eq 0) {
             $aCount = $a.CardCount()
@@ -167,6 +163,8 @@ function playgame {
         }
         sleep -Milliseconds 500
     }
+
+    Write-Host "THE GAME iS OVER!!"
 
 
 }
