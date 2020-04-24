@@ -8,7 +8,7 @@
     #foreach($char in $Message.Split(" ")) {
     foreach($char in $Message.ToCharArray()) {
         Write-Host -ForegroundColor $ForegroundColor "$char" -NoNewLine
-        sleep -Milliseconds 1
+        #sleep -Milliseconds 1
     }
 }
 
@@ -47,6 +47,12 @@ class player {
             $retVal = $this.Cards.Pop();
         }
         return $retVal
+    }
+    [String]CardAverage(){
+        $stackTotal = ($this.Cards | Measure-Object -Property number -Sum).Sum
+        $cardsWonTotal = ($this.CardsWon | Measure-Object -Property number -Sum).Sum 
+
+        return (($stackTotal + $cardsWonTotal) / ($this.CardCount())).ToString("#.##")
     }
 
 
@@ -168,9 +174,9 @@ function playgame {
             $aCount = $a.CardCount()
             $bCount = $b.CardCount()
             if ($aCount -gt $bCount) {
-                Write-Message -ForegroundColor Cyan "$($a.Name) is winning with $($aCount) cards"
+                Write-Message -ForegroundColor Cyan "$($a.Name) is winning with $($aCount) cards and a avg of: $($a.CardAverage())"
             } elseif ($bCount -gt $aCount) {
-                Write-Message -ForegroundColor Cyan "$($b.Name) is winning with $($bCount) cards"
+                Write-Message -ForegroundColor Cyan "$($b.Name) is winning with $($bCount) cards and a total of: $($b.CardAverage())"
             } else {
                 Write-Message -ForegroundColor Cyan "The game is currently a tie"
             }
