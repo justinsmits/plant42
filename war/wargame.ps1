@@ -1,4 +1,18 @@
-﻿class Card {
+﻿function Write-Message{
+    param(
+        [Parameter(Mandatory=$true)]
+        [String]$Message,
+        [System.ConsoleColor]$ForegroundColor=[System.ConsoleColor]::White
+    )
+    Write-Host ""
+    #foreach($char in $Message.Split(" ")) {
+    foreach($char in $Message.ToCharArray()) {
+        Write-Host -ForegroundColor $ForegroundColor "$char" -NoNewLine
+        sleep -Milliseconds 1
+    }
+}
+
+class Card {
     [Int32]$number
 }
 
@@ -24,7 +38,7 @@ class player {
         if ($this.Cards.Count -gt 0) {
             $retVal = $this.Cards.Pop()
         } else {
-            Write-Host -ForegroundColor Magenta "$($this.Name) is shuffeling their deck"
+            Write-Message -ForegroundColor Magenta "$($this.Name) is shuffling their deck"
             $tempDeck = ShuffleDeck($this.CardsWon);
             foreach($card in $tempDeck) {
                 $this.Cards.Push($card);
@@ -61,7 +75,7 @@ class Deck {
 }
 
 function WinWar([PSCustomObject]$winner, [System.Collections.ArrayList]$matchDeck){
-    Write-Host -ForegroundColor Green "$($winner.Name) won the war!!"
+    Write-Message -ForegroundColor Green "$($winner.Name) won the war!!"
     foreach($card in $matchDeck) {
         [void]$winner.CardsWon.add($card)
     }
@@ -72,7 +86,7 @@ function playgame {
     $a = New-Object player("Bob")
     $b = New-Object player("Jill")
 
-    [Int32]$numCards = 5;
+    [Int32]$numCards = 10;
     $gameDeck = New-Object Deck($numCards)
 
     $gameDeck.Cards = ShuffleDeck($gameDeck.Cards)
@@ -82,7 +96,7 @@ function playgame {
         $shuffledDeck.Push($card)
 
     }
-    Write-Host $shuffledDeck.Count
+    Write-Message "$($shuffledDeck.Count)"
 
     $i = 0
     while($shuffledDeck.Count -gt 0) {
@@ -99,9 +113,9 @@ function playgame {
     $matchWinner = $null
     [System.Collections.ArrayList]$matchDeck
     while(($a.HasCards() -eq $true) -and ($b.HasCards() -eq $true)) {
-        Write-Host "Match $i"
-        Write-Host "$($a.Name) has $($a.CardCount()) cards left"
-        Write-Host "$($b.Name) has $($b.CardCount()) cards left"
+        Write-Message "Match $i"
+        Write-Message "$($a.Name) has $($a.CardCount()) cards left"
+        Write-Message "$($b.Name) has $($b.CardCount()) cards left"
         $matchDeck = New-Object System.Collections.ArrayList
 
         while(-not $matchWinner) {
@@ -117,10 +131,10 @@ function playgame {
             $aCard = $a.GetCard()
             $bCard = $b.GetCard()
 
-            Write-Host "$($a.Name) has a $($aCard.number)"
-            Write-Host "$($b.Name) has a $($bCard.number)"
-            $matchDeck.Add($aCard)
-            $matchDeck.Add($bCard)
+            Write-Message "$($a.Name) has a $($aCard.number)"
+            Write-Message "$($b.Name) has a $($bCard.number)"
+            [void]$matchDeck.Add($aCard)
+            [void]$matchDeck.Add($bCard)
         
             if ($aCard.number -gt $bCard.number) {
                 $matchWinner = $a
@@ -128,7 +142,7 @@ function playgame {
             } elseif ($bCard.number -gt $aCard.number) {
                 $matchWinner = $b
             } else {
-                Write-Host -ForegroundColor Red "WWWWWAAAAAAAAARRRRRRRRR!!!!!!!!!!!!!!!!!!!!!"
+                Write-Message -ForegroundColor Red "WWWWWAAAAAAAAARRRRRRRRR!!!!!!!!!!!!!!!!!!!!!"
                 if (-not ($a.CardCount() -ge 2)) {
                     $matchWinner = $b
                     break
@@ -154,17 +168,17 @@ function playgame {
             $aCount = $a.CardCount()
             $bCount = $b.CardCount()
             if ($aCount -gt $bCount) {
-                Write-Host -ForegroundColor Cyan "$($a.Name) is winning with $($aCount) cards"
+                Write-Message -ForegroundColor Cyan "$($a.Name) is winning with $($aCount) cards"
             } elseif ($bCount -gt $aCount) {
-                Write-Host -ForegroundColor Cyan "$($b.Name) is winning with $($bCount) cards"
+                Write-Message -ForegroundColor Cyan "$($b.Name) is winning with $($bCount) cards"
             } else {
-                Write-Host -ForegroundColor Cyan "The game is currently a tie"
+                Write-Message -ForegroundColor Cyan "The game is currently a tie"
             }
         }
-        sleep -Milliseconds 500
+        sleep -Milliseconds 200
     }
 
-    Write-Host "THE GAME iS OVER!!"
+    Write-Message "THE GAME iS OVER!!"
 
 
 }
