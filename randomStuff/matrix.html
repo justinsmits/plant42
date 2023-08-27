@@ -21,10 +21,9 @@
     }
     .itemDivs
     {
-        height:1050px;
         width:12px;
-        background-image: url("http://thematrixsubwayscene.weebly.com/uploads/4/7/2/0/47203933/976058_orig.gif?333");
-        background-image: url("file:///C:/Source2/plant42/randomStuff/matrix.jpg");
+        /* background-image: url("http://thematrixsubwayscene.weebly.com/uploads/4/7/2/0/47203933/976058_orig.gif?333"); */
+        background-image: url("file:///C:/Source/plant42/randomStuff/matrix.jpg");
        /* background-repeat:repeat-y; */
         position:relative;
         float:left;
@@ -45,32 +44,53 @@
 
     body {
         margin:0;
-        padding:0
+        padding:0;
+        overflow: hidden;
     }
 
     </style>
     <script type="text/javascript">
         
         var countobj;
+
+        window.onresize += windowResize;
+
+        function windowResize() {
+            
+            var dvMain = document.getElementById("dvMain");
+            dvMain.style.width = window.innerWidth;
+            dvMain.style.height = window.innerHeight;
+            
+            var divs = dvMain.getElementsByClassName("itemDivs");
+            for(var i=0; i<divs.count;i++){
+                divs[i].remove();
+            }
+
+            createDivs();
+
+        }
+
         function createDivs() {
-            var owidth = window.screen.width;
-            var oheight = window.screen.height;
+
+            var owidth = window.innerWidth;
+            var oheight = window.innerHeight;
             var dvMain = document.getElementById("dvMain");
             var i = 0;
             var newobj;
 
-            for (i = 0; i < owidth - 12; i = i + 12) {
+            for (i = 0; i < owidth; i = i + 12) {
                 newobj = document.createElement("div");
                 newobj.setAttribute("class", "itemDivs");
                 newobj.setAttribute("id", Math.floor((Math.random() * 15) + 1).toString());
+                newobj.style.height = window.innerHeight;
                 dvMain.appendChild(newobj)
             }
         }
 
         function startIt() {
             var dvMain = document.getElementById("dvMain");
-            dvMain.style.width = window.screen.availWidth - 10;
-            dvMain.style.height = window.screen.availHeight - 10;
+            dvMain.style.width = window.innerWidth;
+            dvMain.style.height = window.innerHeight;
             createDivs();
             window.setInterval('scrollIt()', 30);
         }
@@ -139,7 +159,7 @@
 
 </head>
 
-<body onload="startIt()">
+<body onload="startIt()" onresize="windowResize()">
     <div id="dvMain" class="noBorder">
         <div class="centered">
             <iframe width="560" height="315" src="https://www.youtube.com/embed/uHBtpqbOKXk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>

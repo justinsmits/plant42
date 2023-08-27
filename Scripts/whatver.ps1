@@ -1,54 +1,5 @@
 
 
-<#
-
-$thatNewShit = "C:\\newShit.txt"
-$sr = New-Object System.IO.StreamReader C:\\WeeklyOld.txt
-
-If([System.IO.File]::Exists($thatNewShit)){
-	[System.IO.File]::Delete($thatNewShit)
-}
-
-$sw = [System.IO.File]::AppendText($thatNewShit)
-
-While ($sr.Peek() -gt -1){
-	$line = $sr.ReadLine()
-	While($line.IndexOf("<") -gt -1){
-		$line = $line.Replace("<li>", "     - ")
-		$line = $line.Replace("</li>", [System.Environment]::NewLine)
-		
-		
-		$firstIndex = $line.IndexOf('<')
-		if($firstIndex -gt -1){
-			$firstClose = $line.IndexOf('>')
-			$naughtyString = $line.SubString($firstIndex, $firstClose - $firstIndex + 1)
-			$line = $line.Replace($naughtyString, "")
-		}
-	}
-	
-	$sw.WriteLine($line)
-}
-
-$sr.Dispose()
-
-$sw.Flush()
-$sw.Dispose()
-
-Start-Process "C:\Program Files (x86)\Notepad++\notepad++.exe" $thatNewShit
-#Exit
-
-
-
-
-
-[Int32[]] $randomChars = @()
-$randomChars = $randomChars + 1
-$randomChars = $randomChars + 2
-$randomChars = $randomChars + 3
-$retVal = [System.Array]::IndexOf($randomChars, 3)
-Write-Host $retVal
-#>
-
 
 $rnd  = New-Object System.Random	
 
